@@ -56,7 +56,12 @@ export type NamespacesType = Record<
 
 let namespaces: NamespacesType = {};
 
-if (config.isPackage) {
+if (process.env.BUILD_ROUTES_MODE) {
+    modules = directoryImport({
+        targetDirectoryPath: path.join(__dirname, "./routes"),
+        importPattern: /\.tsx?$/,
+    }) as typeof modules;
+} else if (config.isPackage) {
     namespaces = (await import('../assets/build/routes.js')).default;
 } else {
     switch (process.env.NODE_ENV || process.env.VERCEL_ENV) {
